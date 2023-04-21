@@ -19,6 +19,7 @@ type query struct {
 func (f Fiber) Resource(g *gorm.DB, model func() (any, any)) {
 	_, r := model()
 	route := reflect.TypeOf(r).Elem().Name()
+
 	f.Get(fmt.Sprintf("/%s", route), func(c *fiber.Ctx) error {
 		var count int64
 		m, _ := model()
@@ -37,6 +38,7 @@ func (f Fiber) Resource(g *gorm.DB, model func() (any, any)) {
 		}
 		return c.JSON(fiber.Map{"count": count, "data": m, "limit": q.Limit, "page": q.Page})
 	})
+
 	f.Post(fmt.Sprintf("/%s", route), func(c *fiber.Ctx) error {
 		_, m := model()
 		err := c.BodyParser(m)
@@ -49,6 +51,7 @@ func (f Fiber) Resource(g *gorm.DB, model func() (any, any)) {
 		}
 		return c.JSON(m)
 	})
+
 	f.Post(fmt.Sprintf("/%s/batch", route), func(c *fiber.Ctx) error {
 		m, _ := model()
 		err := c.BodyParser(m)
@@ -61,6 +64,7 @@ func (f Fiber) Resource(g *gorm.DB, model func() (any, any)) {
 		}
 		return c.JSON(m)
 	})
+
 	f.Get(fmt.Sprintf("/%s/:id", route), func(c *fiber.Ctx) error {
 		_, m := model()
 		err := g.First(m, c.Params("id")).Error
@@ -69,6 +73,7 @@ func (f Fiber) Resource(g *gorm.DB, model func() (any, any)) {
 		}
 		return c.JSON(m)
 	})
+
 	f.Put(fmt.Sprintf("/%s/:id", route), func(c *fiber.Ctx) error {
 		_, m := model()
 		err := g.First(m, c.Params("id")).Error
@@ -85,6 +90,7 @@ func (f Fiber) Resource(g *gorm.DB, model func() (any, any)) {
 		}
 		return c.JSON(m)
 	})
+
 	f.Delete(fmt.Sprintf("/%s/:id", route), func(c *fiber.Ctx) error {
 		_, m := model()
 		q := g.Delete(m, c.Params("id"))
