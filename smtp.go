@@ -1,15 +1,13 @@
-package library
+package main
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"net"
 	"net/smtp"
 )
 
 type Recipient struct {
 	Email string
-	gorm.Model
 }
 
 type Mail struct {
