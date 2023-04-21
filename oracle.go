@@ -1,4 +1,4 @@
-package main
+package library
 
 import (
 	oracle "github.com/godoes/gorm-oracle"
