@@ -1,0 +1,14 @@
+**/*.log
+**/*.sqlite
+**/.DS_Store
+**/.cache
+**/.env
+**/.git
+**/.idea
+**/.nitro
+**/.nuxt
+**/.output
+**/data
+**/dist
+**/node_modules
+**/vendor
