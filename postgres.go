@@ -12,14 +12,14 @@ type Postgres struct {
 	Models   []interface{}
 	Name     string
 	Password string
-	Port     int
+	Port     string
 	Timezone string
 	User     string
 }
 
 func (p Postgres) New() (Postgres, error) {
 	var err error
-	p.DB, err = gorm.Open(postgres.Open(fmt.Sprintf("dbname=aaa_reconcilliation host=%s user=%s password=%s port=%d sslmode=disable TimeZone=%s", p.Host, p.User, p.Password, p.Port, p.Timezone)), &gorm.Config{})
+	p.DB, err = gorm.Open(postgres.Open(fmt.Sprintf("dbname=%s host=%s user=%s password=%s port=%s sslmode=disable TimeZone=%s", p.Name, p.Host, p.User, p.Password, p.Port, p.Timezone)), &gorm.Config{})
 	if err != nil {
 		return p, err
 	}

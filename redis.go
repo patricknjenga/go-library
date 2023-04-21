@@ -21,11 +21,11 @@ type Error struct {
 type Redis struct {
 	*redis.Client
 	Address string
-	Port    int
+	Port    string
 }
 
 func (r Redis) New() Redis {
-	r.Client = redis.NewClient(&redis.Options{Addr: fmt.Sprintf("%s:%d", r.Address, r.Port)})
+	r.Client = redis.NewClient(&redis.Options{Addr: fmt.Sprintf("%s:%s", r.Address, r.Port)})
 	return r
 }
 

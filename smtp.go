@@ -18,12 +18,12 @@ type Mail struct {
 type Smtp struct {
 	Host     string
 	Password string
-	Port     int
+	Port     string
 	User     string
 }
 
 func (s Smtp) Send(m Mail) error {
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", s.Host, s.Port))
+	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", s.Host, s.Port))
 	if err != nil {
 		return err
 	}

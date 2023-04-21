@@ -9,7 +9,7 @@ type Ssh struct {
 	*ssh.Client
 	Address    string
 	Password   string
-	Port       int
+	Port       string
 	PrivateKey string
 	User       string
 }
@@ -19,7 +19,7 @@ func (s Ssh) New() (Ssh, error) {
 	if err != nil {
 		return s, err
 	}
-	s.Client, err = ssh.Dial("tcp", fmt.Sprintf(`%s:%d`, s.Address, s.Port), &ssh.ClientConfig{
+	s.Client, err = ssh.Dial("tcp", fmt.Sprintf(`%s:%s`, s.Address, s.Port), &ssh.ClientConfig{
 		Auth: []ssh.AuthMethod{
 			ssh.KeyboardInteractive(func(user, instruction string, questions []string, echos []bool) ([]string, error) {
 				answers := make([]string, len(questions))
