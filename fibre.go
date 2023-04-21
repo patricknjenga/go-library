@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 	"reflect"
 )
 
@@ -15,7 +16,7 @@ type query struct {
 	Page  int `form:"page"`
 }
 
-func (f Fiber) Resource(p Postgres, model func() (any, any)) {
+func (f Fiber) Resource(g *gorm.DB, model func() (any, any)) {
 	_, r := model()
 	route := reflect.TypeOf(r).Elem().Name()
 	f.Get(fmt.Sprintf("/%s", route), func(c *fiber.Ctx) error {
@@ -26,11 +27,11 @@ func (f Fiber) Resource(p Postgres, model func() (any, any)) {
 		if err != nil {
 			return err
 		}
-		err = p.Model(m).Count(&count).Error
+		err = g.Model(m).Count(&count).Error
 		if err != nil {
 			return err
 		}
-		err = p.Limit(q.Limit).Offset((q.Page - 1) * q.Limit).Find(m).Error
+		err = g.Limit(q.Limit).Offset((q.Page - 1) * q.Limit).Find(m).Error
 		if err != nil {
 			return err
 		}
@@ -42,7 +43,7 @@ func (f Fiber) Resource(p Postgres, model func() (any, any)) {
 		if err != nil {
 			return err
 		}
-		err = p.Create(m).Error
+		err = g.Create(m).Error
 		if err != nil {
 			return err
 		}
@@ -54,7 +55,7 @@ func (f Fiber) Resource(p Postgres, model func() (any, any)) {
 		if err != nil {
 			return err
 		}
-		err = p.Create(m).Error
+		err = g.Create(m).Error
 		if err != nil {
 			return err
 		}
@@ -62,7 +63,7 @@ func (f Fiber) Resource(p Postgres, model func() (any, any)) {
 	})
 	f.Get(fmt.Sprintf("/%s/:id", route), func(c *fiber.Ctx) error {
 		_, m := model()
-		err := p.First(m, c.Params("id")).Error
+		err := g.First(m, c.Params("id")).Error
 		if err != nil {
 			return fiber.ErrNotFound
 		}
@@ -70,7 +71,7 @@ func (f Fiber) Resource(p Postgres, model func() (any, any)) {
 	})
 	f.Put(fmt.Sprintf("/%s/:id", route), func(c *fiber.Ctx) error {
 		_, m := model()
-		err := p.First(m, c.Params("id")).Error
+		err := g.First(m, c.Params("id")).Error
 		if err != nil {
 			return fiber.ErrNotFound
 		}
@@ -78,7 +79,7 @@ func (f Fiber) Resource(p Postgres, model func() (any, any)) {
 		if err != nil {
 			return err
 		}
-		err = p.Updates(m).Error
+		err = g.Updates(m).Error
 		if err != nil {
 			return err
 		}
@@ -86,7 +87,7 @@ func (f Fiber) Resource(p Postgres, model func() (any, any)) {
 	})
 	f.Delete(fmt.Sprintf("/%s/:id", route), func(c *fiber.Ctx) error {
 		_, m := model()
-		q := p.Delete(m, c.Params("id"))
+		q := g.Delete(m, c.Params("id"))
 		if q.Error != nil {
 			return q.Error
 		}

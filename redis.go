@@ -11,11 +11,11 @@ import (
 )
 
 type Error struct {
-	err  string
-	file string
-	line int
-	ok   bool
-	pc   uintptr
+	Err  string
+	File string
+	Line int
+	Ok   bool
+	Pc   uintptr
 }
 
 type Redis struct {
@@ -37,7 +37,7 @@ func (r Redis) GetSecret(key string) string {
 
 func (r Redis) PublishError(err error) {
 	pc, file, line, ok := runtime.Caller(2)
-	e, _ := json.Marshal(Error{pc: pc, file: file, line: line, ok: ok, err: err.Error()})
-	log.Println(Error{pc: pc, file: file, line: line, ok: ok, err: err.Error()})
+	e, _ := json.Marshal(Error{Pc: pc, File: file, Line: line, Ok: ok, Err: err.Error()})
+	log.Println(Error{Pc: pc, File: file, Line: line, Ok: ok, Err: err.Error()})
 	r.Client.Publish(context.Background(), "error", e)
 }
