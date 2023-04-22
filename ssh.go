@@ -45,6 +45,5 @@ func (s Ssh) Exec(command string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, nil
 	}
-	defer session.Close()
 	return session.Output(command)
 }

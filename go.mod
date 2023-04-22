@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/godoes/gorm-oracle v1.3.38
 	github.com/gofiber/fiber/v2 v2.44.0
+	github.com/hirochachacha/go-smb2 v1.1.0
 	github.com/pkg/sftp v1.13.5
 	github.com/redis/go-redis/v9 v9.0.3
 	golang.org/x/crypto v0.8.0
@@ -17,6 +18,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
+	github.com/geoffgarside/ber v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
