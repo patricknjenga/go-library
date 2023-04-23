@@ -6,7 +6,7 @@ import (
 )
 
 type Oracle struct {
-	*gorm.DB
+	*gorm.DB `gorm:"-"`
 	Cluster  string
 	Host     string
 	Password string
