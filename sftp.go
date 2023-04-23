@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pkg/sftp"
 	"io"
+	"os"
 )
 
 type Sftp struct {
@@ -35,6 +36,14 @@ func (s Sftp) Get(p string) ([]byte, error) {
 		return []byte{}, err
 	}
 	return data, nil
+}
+
+func (s Sftp) Ls() ([]os.FileInfo, error) {
+	return s.Client.ReadDir(s.Directory)
+}
+
+func (s Sftp) Mkdir() error {
+	return s.Client.MkdirAll(s.Directory)
 }
 
 func (s Sftp) Put(p string, data []byte) error {

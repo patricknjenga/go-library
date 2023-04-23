@@ -12,7 +12,7 @@ type Recipient struct {
 
 type Mail struct {
 	Message    []byte
-	recipients []Recipient
+	Recipients []Recipient
 }
 
 type Smtp struct {
@@ -35,7 +35,7 @@ func (s Smtp) Send(m Mail) error {
 	if err != nil {
 		return err
 	}
-	for _, v := range m.recipients {
+	for _, v := range m.Recipients {
 		err = c.Rcpt(v.Email)
 		if err != nil {
 			return err

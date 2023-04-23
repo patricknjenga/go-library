@@ -24,7 +24,7 @@ func (o Oracle) New() (Oracle, error) {
 	return o, err
 }
 
-func getActiveStandbyOracleDbs(dbs []Oracle) ([]Oracle, []Oracle, error) {
+func GetActiveStandbyOracleDbs(dbs []Oracle) ([]Oracle, []Oracle, error) {
 	var active, standby []Oracle
 	for _, v := range dbs {
 		v, err := v.New()

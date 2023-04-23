@@ -3,10 +3,12 @@ package library
 import (
 	"fmt"
 	"github.com/hirochachacha/go-smb2"
+	"io"
 	"net"
+	"os"
 )
 
-type SmbConnector struct {
+type Smb struct {
 	*smb2.Session
 	*smb2.Share
 	Address   string
@@ -14,14 +16,14 @@ type SmbConnector struct {
 	Mount     string
 	Password  string
 	Pattern   string
+	Port      string
 	User      string
-	paths     []string
 }
 
-func (s *SmbConnector) init() error {
-	connection, err := net.Dial("tcp", s.Address)
+func (s Smb) New() (Smb, error) {
+	connection, err := net.Dial("tcp", fmt.Sprintf("%s:%s", s.Address, s.Port))
 	if err != nil {
-		return err
+		return s, err
 	}
 	dialer := &smb2.Dialer{
 		Initiator: &smb2.NTLMInitiator{
@@ -31,38 +33,41 @@ func (s *SmbConnector) init() error {
 	}
 	session, err := dialer.Dial(connection)
 	if err != nil {
-		return err
+		return s, err
 	}
 	share, err := session.Mount(s.Mount)
 	if err != nil {
-		return err
+		return s, err
 	}
 	s.Share = share
 	s.Session = session
-	return nil
+	return s, err
 }
 
-func (s *SmbConnector) mkdir() error {
-	err := s.Share.MkdirAll(s.Directory, 0777)
+func (s Smb) Get(p string) ([]byte, error) {
+	reader, err := s.Share.Open(fmt.Sprintf("%s/%s", s.Directory, p))
 	if err != nil {
-		return err
+		return []byte{}, err
 	}
-	return nil
+	data, err := io.ReadAll(reader)
+	if err != nil {
+		return []byte{}, err
+	}
+	return data, nil
 }
 
-func (s *SmbConnector) upload(path string, data []byte) (int, error) {
-	_path := fmt.Sprintf("%s/%s", s.Directory, path)
-	writer, err := s.Share.Create(_path)
+func (s Smb) Ls() ([]os.FileInfo, error) {
+	return s.Share.ReadDir(s.Directory)
+}
+
+func (s Smb) Mkdir() error {
+	return s.Share.MkdirAll(s.Directory, 0777)
+}
+
+func (s Smb) Put(path string, data []byte) (int, error) {
+	writer, err := s.Share.Create(fmt.Sprintf("%s/%s", s.Directory, path))
 	if err != nil {
 		return 0, err
 	}
 	return writer.Write(data)
-}
-
-func (s *SmbConnector) download(p string) ([]byte, error) {
-	return []byte{}, nil
-}
-
-func (s *SmbConnector) list() ([]string, error) {
-	return []string{}, nil
 }
