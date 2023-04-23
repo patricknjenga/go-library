@@ -15,19 +15,19 @@ type Oracle struct {
 	User     string
 }
 
-func (o Oracle) New() (Oracle, error) {
+func (o Oracle) New(r Redis) (Oracle, error) {
 	var err error
-	o.DB, err = gorm.Open(oracle.Open(oracle.BuildUrl(o.Host, o.Port, o.Service, o.User, o.Password, nil)), &gorm.Config{})
+	o.DB, err = gorm.Open(oracle.Open(oracle.BuildUrl(o.Host, o.Port, o.Service, o.User, r.GetSecret(o.Password), nil)), &gorm.Config{})
 	if err != nil {
 		return o, err
 	}
 	return o, err
 }
 
-func GetActiveStandbyOracleDbs(dbs []Oracle) ([]Oracle, []Oracle, error) {
+func GetActiveStandbyOracleDbs(r Redis, dbs []Oracle) ([]Oracle, []Oracle, error) {
 	var active, standby []Oracle
 	for _, v := range dbs {
-		v, err := v.New()
+		v, err := v.New(r)
 		if err != nil {
 			return active, standby, err
 		}

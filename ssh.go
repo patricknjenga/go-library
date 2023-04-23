@@ -14,8 +14,8 @@ type Ssh struct {
 	User        string
 }
 
-func (s Ssh) New() (Ssh, error) {
-	signer, err := ssh.ParsePrivateKey([]byte(s.PrivateKey))
+func (s Ssh) New(r Redis) (Ssh, error) {
+	signer, err := ssh.ParsePrivateKey([]byte(r.GetSecret(s.PrivateKey)))
 	if err != nil {
 		return s, err
 	}
@@ -24,11 +24,11 @@ func (s Ssh) New() (Ssh, error) {
 			ssh.KeyboardInteractive(func(user, instruction string, questions []string, echos []bool) ([]string, error) {
 				answers := make([]string, len(questions))
 				for i := range answers {
-					answers[i] = s.Password
+					answers[i] = r.GetSecret(s.Password)
 				}
 				return answers, nil
 			}),
-			ssh.Password(s.Password),
+			ssh.Password(r.GetSecret(s.Password)),
 			ssh.PublicKeys(signer),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),

@@ -13,9 +13,9 @@ type Sftp struct {
 	Ssh
 }
 
-func (s Sftp) New() (Sftp, error) {
+func (s Sftp) New(r Redis) (Sftp, error) {
 	var err error
-	s.Ssh, err = s.Ssh.New()
+	s.Ssh, err = s.Ssh.New(r)
 	if err != nil {
 		return s, err
 	}

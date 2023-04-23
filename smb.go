@@ -19,7 +19,7 @@ type Smb struct {
 	User          string
 }
 
-func (s Smb) New() (Smb, error) {
+func (s Smb) New(r Redis) (Smb, error) {
 	connection, err := net.Dial("tcp", fmt.Sprintf("%s:%s", s.Address, s.Port))
 	if err != nil {
 		return s, err
@@ -27,7 +27,7 @@ func (s Smb) New() (Smb, error) {
 	dialer := &smb2.Dialer{
 		Initiator: &smb2.NTLMInitiator{
 			User:     s.User,
-			Password: s.Password,
+			Password: r.GetSecret(s.Password),
 		},
 	}
 	session, err := dialer.Dial(connection)
