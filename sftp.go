@@ -8,8 +8,8 @@ import (
 )
 
 type Sftp struct {
-	*sftp.Client
-	Directory string
+	*sftp.Client `gorm:"-"`
+	Directory    string
 	Ssh
 }
 

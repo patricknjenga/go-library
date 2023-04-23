@@ -6,12 +6,12 @@ import (
 )
 
 type Ssh struct {
-	*ssh.Client
-	Address    string
-	Password   string
-	Port       string
-	PrivateKey string
-	User       string
+	*ssh.Client `gorm:"-"`
+	Address     string
+	Password    string
+	Port        string
+	PrivateKey  string
+	User        string
 }
 
 func (s Ssh) New() (Ssh, error) {

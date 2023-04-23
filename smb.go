@@ -9,14 +9,14 @@ import (
 )
 
 type Smb struct {
-	*smb2.Session
-	*smb2.Share
-	Address   string
-	Directory string
-	Mount     string
-	Password  string
-	Port      string
-	User      string
+	*smb2.Session `gorm:"-"`
+	*smb2.Share   `gorm:"-"`
+	Address       string
+	Directory     string
+	Mount         string
+	Password      string
+	Port          string
+	User          string
 }
 
 func (s Smb) New() (Smb, error) {

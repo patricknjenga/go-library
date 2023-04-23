@@ -6,11 +6,11 @@ import (
 )
 
 type Smtp struct {
-	*smtp.Client
-	Host     string
-	Password string
-	Port     string
-	User     string
+	*smtp.Client `gorm:"-"`
+	Host         string
+	Password     string
+	Port         string
+	User         string
 }
 
 func (s Smtp) New() (Smtp, error) {
