@@ -15,7 +15,6 @@ type Smb struct {
 	Directory string
 	Mount     string
 	Password  string
-	Pattern   string
 	Port      string
 	User      string
 }
@@ -71,3 +70,8 @@ func (s Smb) Put(path string, data []byte) (int, error) {
 	}
 	return writer.Write(data)
 }
+
+func (s Smb) GetAddress() string   { return s.Address }
+func (s Smb) GetDirectory() string { return s.Directory }
+func (s Smb) GetPort() string      { return s.Port }
+func (s Smb) GetUser() string      { return s.User }
