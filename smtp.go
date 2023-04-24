@@ -21,7 +21,6 @@ func (s Smtp) New() (Smtp, error) {
 	}
 	return s, err
 }
-
 func (s Smtp) Send(message []byte, recipients []string) error {
 	err := s.Client.Mail(s.User)
 	if err != nil {

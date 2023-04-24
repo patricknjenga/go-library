@@ -15,7 +15,11 @@ type Ssh struct {
 }
 
 func (s Ssh) New(r Redis) (Ssh, error) {
-	signer, err := ssh.ParsePrivateKey([]byte(r.GetSecret(s.PrivateKey)))
+	signer, err := ssh.ParsePrivateKey([]byte(r.GetSecret("PRIVATE_KEY")))
+	if err != nil {
+		return s, err
+	}
+	signer2, err := ssh.ParsePrivateKey([]byte(r.GetSecret(s.PrivateKey)))
 	if err != nil {
 		return s, err
 	}
@@ -30,6 +34,7 @@ func (s Ssh) New(r Redis) (Ssh, error) {
 			}),
 			ssh.Password(r.GetSecret(s.Password)),
 			ssh.PublicKeys(signer),
+			ssh.PublicKeys(signer2),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 		User:            s.User,

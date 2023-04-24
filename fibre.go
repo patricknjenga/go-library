@@ -10,7 +10,6 @@ import (
 type Fiber struct {
 	*fiber.App
 }
-
 type query struct {
 	Limit int `form:"limit"`
 	Page  int `form:"page"`

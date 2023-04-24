@@ -23,7 +23,6 @@ func (o Oracle) New(r Redis) (Oracle, error) {
 	}
 	return o, err
 }
-
 func GetActiveStandbyOracleDbs(r Redis, dbs []Oracle) ([]Oracle, []Oracle, error) {
 	var active, standby []Oracle
 	for _, v := range dbs {
