@@ -5,38 +5,28 @@ import (
 	"net/smtp"
 )
 
-type Smtp struct {
-	*smtp.Client `gorm:"-"`
-	Host         string
-	Password     string
-	Port         string
-	User         string
+type Mail struct {
+	message    []byte
+	recipients []string
 }
 
-func (s Smtp) New() (Smtp, error) {
-	var err error
-	s.Client, err = smtp.Dial(fmt.Sprintf("%s:%s", s.Host, s.Port))
-	if err != nil {
-		return s, err
-	}
-	return s, err
-}
-func (s Smtp) Send(message []byte, recipients []string) error {
-	err := s.Client.Mail(s.User)
+func (m Mail) Send(r Redis) error {
+	c, err := smtp.Dial(fmt.Sprintf("%s:%s", r.GetSecret("SMTP_HOST"), r.GetSecret("SMTP_PORT")))
+	err = c.Mail(r.GetSecret("SMTP_USER"))
 	if err != nil {
 		return err
 	}
-	for _, v := range recipients {
-		err = s.Client.Rcpt(v)
+	for _, v := range m.recipients {
+		err = c.Rcpt(v)
 		if err != nil {
 			return err
 		}
 	}
-	w, err := s.Client.Data()
+	w, err := c.Data()
 	if err != nil {
 		return err
 	}
-	_, err = w.Write(message)
+	_, err = w.Write(m.message)
 	if err != nil {
 		return err
 	}
@@ -44,7 +34,7 @@ func (s Smtp) Send(message []byte, recipients []string) error {
 	if err != nil {
 		return err
 	}
-	err = s.Client.Close()
+	err = c.Close()
 	if err != nil {
 		return err
 	}
