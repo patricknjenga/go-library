@@ -7,7 +7,6 @@ import (
 type Sms struct {
 	Message string
 	Phone   string
-	Service string
 }
 
 func (s Sms) Send(r Redis) ([]byte, error) {
