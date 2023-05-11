@@ -25,22 +25,19 @@ func (s Smb) New(r Redis) (Smb, error) {
 	if err != nil {
 		return s, err
 	}
-	dialer := &smb2.Dialer{
+	s.Session, err = (&smb2.Dialer{
 		Initiator: &smb2.NTLMInitiator{
 			User:     s.User,
 			Password: r.GetSecret(s.Password),
 		},
-	}
-	session, err := dialer.Dial(connection)
+	}).Dial(connection)
 	if err != nil {
 		return s, err
 	}
-	share, err := session.Mount(s.Mount)
+	s.Share, err = s.Session.Mount(s.Mount)
 	if err != nil {
 		return s, err
 	}
-	s.Share = share
-	s.Session = session
 	return s, err
 }
 func (s Smb) Get(p string) ([]byte, error) {
