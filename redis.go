@@ -5,9 +5,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/redis/go-redis/v9"
 	"log"
 	"runtime"
+
+	"github.com/redis/go-redis/v9"
 )
 
 type Error struct {

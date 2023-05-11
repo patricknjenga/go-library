@@ -2,9 +2,10 @@ package library
 
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
-	"reflect"
 )
 
 type Fiber struct {

@@ -2,10 +2,11 @@ package library
 
 import (
 	"fmt"
-	"github.com/hirochachacha/go-smb2"
 	"io"
 	"net"
 	"os"
+
+	"github.com/hirochachacha/go-smb2"
 )
 
 type Smb struct {

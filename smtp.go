@@ -6,8 +6,8 @@ import (
 )
 
 type Mail struct {
-	message    []byte
-	recipients []string
+	Message    []byte
+	Recipients []string
 }
 
 func (m Mail) Send(r Redis) error {
@@ -16,7 +16,7 @@ func (m Mail) Send(r Redis) error {
 	if err != nil {
 		return err
 	}
-	for _, v := range m.recipients {
+	for _, v := range m.Recipients {
 		err = c.Rcpt(v)
 		if err != nil {
 			return err
@@ -26,7 +26,7 @@ func (m Mail) Send(r Redis) error {
 	if err != nil {
 		return err
 	}
-	_, err = w.Write(m.message)
+	_, err = w.Write(m.Message)
 	if err != nil {
 		return err
 	}

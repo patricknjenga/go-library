@@ -2,9 +2,10 @@ package library
 
 import (
 	"fmt"
-	"github.com/pkg/sftp"
 	"io"
 	"os"
+
+	"github.com/pkg/sftp"
 )
 
 type Sftp struct {
