@@ -31,11 +31,7 @@ func (s Sftp) Get(p string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
-	data, err := io.ReadAll(reader)
-	if err != nil {
-		return []byte{}, err
-	}
-	return data, nil
+	return io.ReadAll(reader)
 }
 func (s Sftp) Ls() ([]os.FileInfo, error) {
 	return s.Client.ReadDir(s.Directory)
@@ -43,16 +39,12 @@ func (s Sftp) Ls() ([]os.FileInfo, error) {
 func (s Sftp) Mkdir() error {
 	return s.Client.MkdirAll(s.Directory)
 }
-func (s Sftp) Put(p string, data []byte) error {
+func (s Sftp) Put(p string, data []byte) (int, error) {
 	writer, err := s.Client.Create(fmt.Sprintf("%s/%s", s.Directory, p))
 	if err != nil {
-		return err
+		return 0, err
 	}
-	_, err = writer.Write(data)
-	if err != nil {
-		return err
-	}
-	return nil
+	return writer.Write(data)
 }
 func (s Sftp) GetAddress() string   { return s.Address }
 func (s Sftp) GetDirectory() string { return s.Directory }

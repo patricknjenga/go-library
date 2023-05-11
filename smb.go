@@ -45,11 +45,7 @@ func (s Smb) Get(p string) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
-	data, err := io.ReadAll(reader)
-	if err != nil {
-		return []byte{}, err
-	}
-	return data, nil
+	return io.ReadAll(reader)
 }
 func (s Smb) Ls() ([]os.FileInfo, error) {
 	return s.Share.ReadDir(s.Directory)
