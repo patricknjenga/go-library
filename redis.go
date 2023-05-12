@@ -3,7 +3,6 @@ package library
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"log"
 	"runtime"
@@ -12,11 +11,8 @@ import (
 )
 
 type Error struct {
-	Err  string
-	File string
-	Line int
-	Ok   bool
-	Pc   uintptr
+	Err   string
+	Trace []byte
 }
 type Redis struct {
 	*redis.Client
@@ -28,14 +24,23 @@ func (r Redis) New() Redis {
 	r.Client = redis.NewClient(&redis.Options{Addr: fmt.Sprintf("%s:%s", r.Address, r.Port)})
 	return r
 }
+
 func (r Redis) GetSecret(key string) string {
 	val, _ := r.Client.Get(context.Background(), key).Result()
 	decoded, _ := base64.StdEncoding.DecodeString(val)
 	return string(decoded)
 }
+
 func (r Redis) PublishError(err error) {
-	pc, file, line, ok := runtime.Caller(2)
-	e, _ := json.Marshal(Error{Pc: pc, File: file, Line: line, Ok: ok, Err: err.Error()})
-	log.Println(Error{Pc: pc, File: file, Line: line, Ok: ok, Err: err.Error()})
+	var e = Error{Err: err.Error(), Trace: make([]byte, 512)}
+	_ = runtime.Stack(e.Trace, false)
+	log.Println(e)
 	r.Client.Publish(context.Background(), "error", e)
+}
+
+func (r Redis) CheckError(f func() error) {
+	err := f()
+	if err != nil {
+		r.PublishError(err)
+	}
 }
