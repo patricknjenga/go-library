@@ -12,7 +12,7 @@ import (
 
 type Error struct {
 	Err   string
-	Trace []byte
+	Trace string
 }
 type Redis struct {
 	*redis.Client
@@ -32,8 +32,9 @@ func (r Redis) GetSecret(key string) string {
 }
 
 func (r Redis) PublishError(err error) {
-	var e = Error{Err: err.Error(), Trace: make([]byte, 512)}
-	_ = runtime.Stack(e.Trace, false)
+	var b = make([]byte, 512)
+	runtime.Stack(b, false)
+	var e = Error{Err: err.Error(), Trace: string(b)}
 	log.Println(e)
 	r.Client.Publish(context.Background(), "error", e)
 }
