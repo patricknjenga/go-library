@@ -5,15 +5,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
-	"runtime"
 
 	"github.com/redis/go-redis/v9"
 )
 
-type Error struct {
-	Err   string
-	Trace string
-}
 type Redis struct {
 	*redis.Client
 	Address string
@@ -32,11 +27,8 @@ func (r Redis) GetSecret(key string) string {
 }
 
 func (r Redis) PublishError(err error) {
-	var b = make([]byte, 512)
-	runtime.Stack(b, false)
-	var e = Error{Err: err.Error(), Trace: string(b)}
-	log.Println(e)
-	r.Client.Publish(context.Background(), "error", e)
+	log.Println(err)
+	r.Client.Publish(context.Background(), "error", err)
 }
 
 func (r Redis) CheckError(f func() error) {
