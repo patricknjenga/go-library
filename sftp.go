@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 
 	"github.com/pkg/sftp"
 )
@@ -35,8 +36,22 @@ func (s Sftp) Get(p string) ([]byte, error) {
 	return io.ReadAll(reader)
 }
 
-func (s Sftp) Ls() ([]os.FileInfo, error) {
-	return s.Client.ReadDir(s.Directory)
+func (s Sftp) Ls(regex string) ([]os.FileInfo, error) {
+	var result []os.FileInfo
+	regexp, err := regexp.Compile(regex)
+	if err != nil {
+		return result, err
+	}
+	fileInfos, err := s.Client.ReadDir(s.Directory)
+	if err != nil {
+		return result, err
+	}
+	for _, v := range fileInfos {
+		if regexp.Match([]byte(v.Name())) {
+			result = append(result, v)
+		}
+	}
+	return result, err
 }
 
 func (s Sftp) Mkdir() error {

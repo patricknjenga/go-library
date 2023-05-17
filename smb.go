@@ -5,6 +5,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"regexp"
 
 	"github.com/hirochachacha/go-smb2"
 )
@@ -49,8 +50,22 @@ func (s Smb) Get(p string) ([]byte, error) {
 	return io.ReadAll(reader)
 }
 
-func (s Smb) Ls() ([]os.FileInfo, error) {
-	return s.Share.ReadDir(s.Directory)
+func (s Smb) Ls(regex string) ([]os.FileInfo, error) {
+	var result []os.FileInfo
+	regexp, err := regexp.Compile(regex)
+	if err != nil {
+		return result, err
+	}
+	fileInfos, err := s.Share.ReadDir(s.Directory)
+	if err != nil {
+		return result, err
+	}
+	for _, v := range fileInfos {
+		if regexp.Match([]byte(v.Name())) {
+			result = append(result, v)
+		}
+	}
+	return result, err
 }
 
 func (s Smb) Mkdir() error {
