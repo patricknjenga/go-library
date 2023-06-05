@@ -11,18 +11,18 @@ type Mail struct {
 }
 
 func (m Mail) Send(r Redis) error {
-	c, err := smtp.Dial(fmt.Sprintf("%s:%s", r.GetSecret("SMTP_HOST"), r.GetSecret("SMTP_PORT")))
-	err = c.Mail(r.GetSecret("SMTP_USER"))
+	client, err := smtp.Dial(fmt.Sprintf("%s:%s", r.GetSecret("SMTP_HOST"), r.GetSecret("SMTP_PORT")))
+	err = client.Mail(r.GetSecret("SMTP_USER"))
 	if err != nil {
 		return err
 	}
 	for _, v := range m.Recipients {
-		err = c.Rcpt(v)
+		err = client.Rcpt(v)
 		if err != nil {
 			return err
 		}
 	}
-	w, err := c.Data()
+	w, err := client.Data()
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (m Mail) Send(r Redis) error {
 	if err != nil {
 		return err
 	}
-	err = c.Close()
+	err = client.Close()
 	if err != nil {
 		return err
 	}
