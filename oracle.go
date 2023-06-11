@@ -17,7 +17,7 @@ type Oracle struct {
 
 func (o Oracle) New(r Redis) (Oracle, error) {
 	var err error
-	o.DB, err = gorm.Open(oracle.Open(oracle.BuildUrl(o.Host, o.Port, o.Service, o.User, r.GetSecret(o.Password), map[string]string{"CONNECTION TIMEOUT": "0"})), &gorm.Config{})
+	o.DB, err = gorm.Open(oracle.Open(oracle.BuildUrl(o.Host, o.Port, o.Service, o.User, r.GetSecret(o.Password), map[string]string{"CONNECTION TIMEOUT": "86400"})), &gorm.Config{})
 	if err != nil {
 		return o, err
 	}
