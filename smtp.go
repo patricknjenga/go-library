@@ -8,13 +8,13 @@ import (
 )
 
 type Smtp struct {
-	Attach      []string
+	Attach      []string `gorm:"type:text[]"`
 	Body        string
 	ContentType string
-	Embed       []string
-	From        []string
-	Subject     []string
-	To          []string
+	Embed       []string `gorm:"type:text[]"`
+	From        []string `gorm:"type:text[]"`
+	Subject     []string `gorm:"type:text[]"`
+	To          []string `gorm:"type:text[]"`
 }
 
 func (s Smtp) Send(r Redis) error {

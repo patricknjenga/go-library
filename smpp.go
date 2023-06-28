@@ -5,8 +5,8 @@ import (
 )
 
 type Smpp struct {
-	Messages   []string
-	Recipients []string
+	Messages   []string `gorm:"type:text[]"`
+	Recipients []string `gorm:"type:text[]"`
 }
 
 func (s Smpp) Send(r Redis) error {

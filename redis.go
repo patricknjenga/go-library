@@ -10,9 +10,9 @@ import (
 )
 
 type Redis struct {
-	*redis.Client
-	Address string
-	Port    string
+	*redis.Client `gorm:"-"`
+	Address       string
+	Port          string
 }
 
 func (r Redis) New() Redis {
